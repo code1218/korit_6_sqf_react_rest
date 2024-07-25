@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 /**
  * 
@@ -9,14 +9,17 @@ import React, { useState } from 'react';
 function RegisterSizePage(props) {
     const [ size, setSize ] = useState({
         sizeName: "",
+        month: ""
     });
 
+    useEffect(() => {
+        console.log(size)
+    }, [size])
+
     const handleInputChange = (e) => {
-        setSize(size => {
-            return {
-                ...size,
-                [e.target.name]: e.target.value
-            }
+        setSize({
+            ...size,
+            [e.target.name]: e.target.value
         });
     }
 
@@ -44,6 +47,7 @@ function RegisterSizePage(props) {
                     onChange={handleInputChange}
                     value={size.sizeName}
                     />
+                <input type="month" name='month' onChange={handleInputChange} value={size.month}/>
             </p>
             <p>
                 <button onClick={handleSubmitClick}>등록</button>
