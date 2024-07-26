@@ -10,6 +10,14 @@ const layout = css`
 `;
 
 function ComputerPage(props) {
+    const [ computerDetail, setComputerDetail ] = useState({
+        computerId: "",
+        company: "",
+        cpu: "",
+        ram: "",
+        ssd: ""
+    });
+
     const [ registerComputer, setRegisterComputer ] = useState({
         company: "",
         cpu: "",
@@ -52,6 +60,34 @@ function ComputerPage(props) {
             cpu: ""
         });
     }
+
+    const handleSelectComputerClick = async (computerId) => {
+        const data = await requestGetComputer(computerId);
+        if(!data) {
+            setComputerDetail({
+                computerId: "",
+                company: "",
+                cpu: "",
+                ram: "",
+                ssd: ""
+            });
+            return;
+        }
+        setComputerDetail(data);
+    }
+
+    const requestGetComputer = async (computerId) => {
+        let responseData = null;
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/computer/${computerId}`);
+            console.log(response);
+            responseData = response.data;
+        } catch(e) {
+            console.error(e);
+        }
+        return responseData;
+    }
+
 
     const handleRegisterInputChange = (e) => {
         setRegisterComputer(rc => {
@@ -99,7 +135,7 @@ function ComputerPage(props) {
                         {
                             computerList.map(computer => 
                                 <tr key={computer.computerId}>
-                                    <td><button>선택</button></td>
+                                    <td><button onClick={() => handleSelectComputerClick(computer.computerId)}>선택</button></td>
                                     <td>{computer.computerId}</td>
                                     <td>{computer.company}</td>
                                     <td><button>수정</button></td>
@@ -112,7 +148,13 @@ function ComputerPage(props) {
             </div>
             <div css={layout}>
                 <h2>세부정보</h2>
-
+                <ul>
+                    <li>ID: {computerDetail.computerId}</li>
+                    <li>제조사: {computerDetail.company}</li>
+                    <li>CPU: {computerDetail.cpu}</li>
+                    <li>RAM: {computerDetail.ram}</li>
+                    <li>SSD: {computerDetail.ssd}</li>
+                </ul>
             </div>
             <div css={layout}>
                 <h2>등록</h2>
